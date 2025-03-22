@@ -6,10 +6,11 @@ from pyspark.sql.types import IntegerType
 spark = SparkSession.builder \
     .appName("Analise Reviews IMDB") \
     .getOrCreate()
+# Configurando logs para facilitar a leitura
 spark.sparkContext.setLogLevel('WARN')
 
 # Carregar o dataset
-df = spark.read.csv("/app/imdb-reviews-pt-br.csv", header=True, inferSchema=True)
+df = spark.read.csv("hdfs://namenode:8020/imdb-reviews-pt-br.csv", header=True, inferSchema=True)
 
 # Exibir o schema do dataset
 df.printSchema()
