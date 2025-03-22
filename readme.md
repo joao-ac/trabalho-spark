@@ -1,0 +1,1 @@
+Trabalho acadêmico realizado utilizando cluster de Spark, conteinerizado utilizando Docker. A planilha utilizada neste trabalho está disponível no seguinte link: https://www.kaggle.com/datasets/luisfredgs/imdb-ptbr/data
