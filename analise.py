@@ -18,8 +18,7 @@ schema = StructType([
 ])
 
 # Carregar o dataset
-df = spark.read.csv("hdfs://namenode:8020/imdb-reviews-pt-br.csv", header=True, schema=schema, quote="\"",
-escape="\"", encoding="UTF-8")
+df = spark.read.csv("hdfs://namenode:8020/imdb-reviews-pt-br.csv", header=True, schema=schema, quote="\"", escape="\"", encoding="UTF-8")
 
 # Remover espaços em branco e caracteres especiais
 df = df.withColumn("text_en", trim(col("text_en"))) \
@@ -99,9 +98,12 @@ contar_palavras_udf = udf(contar_palavras, IntegerType())
 df_neg = df_neg.withColumn("palavras_en", contar_palavras_udf(col("text_en"))) \
                .withColumn("palavras_pt", contar_palavras_udf(col("text_pt")))
 
-# Calcular a diferença de palavras
-df_neg = df_neg.withColumn("diff_palavras", col("palavras_pt") - col("palavras_en"))
+# Contando palavras em inglês
+cont_en = df_neg.agg({"palavras_en": "sum"}).collect()[0][0]
 
-# Soma das diferenças
-diff_total = df_neg.agg({"diff_palavras": "sum"}).collect()[0][0]
-print(f"Diferença total de palavras (text_pt - text_en) com sentimento negativo: {diff_total}")
+# Contando palavras em português
+cont_pt = df_neg.agg({"palavras_pt": "sum"}).collect()[0][0]
+
+# Print dos resultados e subtração para encontrar a diferença.
+print(f"A quantidade de palavras em inglês é: {cont_en}. A quantidade de palavras em portugês é: {cont_pt}.")
+print(f"Existem {cont_pt - cont_en} palavras em português a mais que inglês.")
